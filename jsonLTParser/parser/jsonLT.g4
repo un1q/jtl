@@ -70,6 +70,7 @@ WS
 // 
 path
   : ROOT deeper?
+  | CURRENT deeper?
   ;
 
 deeper
@@ -80,6 +81,10 @@ deeper
 
 ROOT
   : '$'
+  ;
+
+CURRENT
+  : '@'
   ;
 
 NODE
