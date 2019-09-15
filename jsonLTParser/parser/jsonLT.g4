@@ -75,6 +75,7 @@ path
 
 deeper
   : '.' NODE deeper?
+  | '[\'' NODE '\']' deeper?
   ;
 
 
