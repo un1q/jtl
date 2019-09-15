@@ -55,9 +55,8 @@ NUMBER
   : '-'? INT ('.' [0-9] +)? EXP?
   ;
 
-
 fragment INT
-  : '0' | [1-9] [0-9]*
+  : [0-9]+
   ;
 
 fragment EXP
@@ -76,8 +75,8 @@ path
 deeper
   : '.' NODE deeper?
   | '[\'' NODE '\']' deeper?
+  | '[' NUMBER ']' deeper?
   ;
-
 
 ROOT
   : '$'
