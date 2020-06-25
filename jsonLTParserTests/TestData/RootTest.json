@@ -4,37 +4,37 @@
       "name": "name1",
       "surname": "surname1",
       "sex": "male",
-      "age": "39"
+      "age": 39
     },
     {
       "name": "name2",
       "surname": "surname2",
       "sex": "female",
-      "age": "39"
+      "age": 39
     },
     {
       "name": "name3",
       "surname": "surname3",
       "sex": "male",
-      "age": "9"
+      "age": 9
     },
     {
       "name": "name4",
       "surname": "surname4",
       "sex": "female",
-      "age": "9"
+      "age": 9
     },
     {
       "name": "name5",
       "surname": "surname5",
       "sex": "male",
-      "age": "29"
+      "age": 29
     },
     {
       "name": "name6",
       "surname": "surname6",
       "sex": "female",
-      "age": "29"
+      "age": 29
     }
   ]
 }

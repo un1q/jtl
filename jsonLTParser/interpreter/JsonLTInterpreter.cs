@@ -2,13 +2,17 @@
 using Antlr4.Runtime.Tree;
 using JsonLT.Parser;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using static JsonLT.Parser.JsonLTParser;
 
 namespace jsonLTParser.interpreter {
     public class JsonLTInterpreter {
-        Dictionary<Type, Func<IParseTree, object>> interpreters = new Dictionary<Type, Func<IParseTree, object>>();
+        private Dictionary<Type, Func<IParseTree, object>> interpreters = new Dictionary<Type, Func<IParseTree, object>>();
+        private JToken jsonObj;
+        private JToken jsonCurrent;
+        private Dictionary<string, JToken> jsonAliases;
 
         public JsonLTInterpreter() {
             interpreters.Add(typeof(JsonContext        ), InterpretJsonContext         );
@@ -19,11 +23,14 @@ namespace jsonLTParser.interpreter {
             interpreters.Add(typeof(ArrayContext       ), InterpretArrayContext        );
             //interpreters.Add(typeof(AbsolutePathContext), InterpretAbsolutePathContext );
             //interpreters.Add(typeof(DeeperContext      ), InterpretDeeperContext       );
-            //interpreters.Add(typeof(PathContext        ), InterpretPathContext         );
+            interpreters.Add(typeof(SubpathContext     ), InterpretSubpathContext      );
+            interpreters.Add(typeof(PathContext        ), InterpretPathContext         );
             interpreters.Add(typeof(TerminalNodeImpl   ), InterpretTerminalNodeImpl    );
         }
 
         public string run(string json, string jsonLT) {
+            jsonObj = (JToken)JsonConvert.DeserializeObject(json);
+            jsonAliases = new Dictionary<string, JToken>();
             IParseTree tree = prepareTree(jsonLT);
             object result = Interpret(tree);
             return JsonConvert.SerializeObject(result, new JsonTerminalConverter());
@@ -130,6 +137,38 @@ namespace jsonLTParser.interpreter {
                 return new JsonNull(term.GetText());
             }
             return null;
+        }
+
+        private object InterpretPathContext(IParseTree node) {
+            ValidateChildCount(node, 2);
+            IParseTree aliasChild = node.GetChild(0);
+            ValidateType<TerminalNodeImpl>(aliasChild);
+            int aliasType = ((TerminalNodeImpl)aliasChild).Symbol.Type;
+            if (aliasType == ROOT) {
+                JToken jsonCurrentBackup = jsonCurrent;
+                jsonCurrent = jsonObj;
+                object result = Interpret(node.GetChild(1));
+                jsonCurrent = jsonCurrentBackup;
+                return result;
+            } else {
+                throw new InterpreterException("Unknown path alias type: " + aliasChild.GetText());
+            }
+        }
+
+        private object InterpretSubpathContext(IParseTree node) {
+            ValidateChildCountMin(node, 2);
+            if ("[".Equals(node.GetChild(0).GetText())) {
+                int index = Convert.ToInt32(node.GetChild(1).GetText());
+                jsonCurrent = jsonCurrent[index];
+            } else {
+                jsonCurrent = jsonCurrent[node.GetChild(1).GetText()];
+            }
+            IParseTree lastChild = node.GetChild(node.ChildCount-1);
+            if (lastChild is SubpathContext) {
+                return Interpret(lastChild);
+            } else {
+                return jsonCurrent;
+            }
         }
 
         private void ValidateChildCount(IParseTree node, int count) {
