@@ -50,6 +50,15 @@ namespace jsonLTParser.Tests {
         }
 
         [TestMethod()]
+        public void RootTest3() {
+            string json = ReadFile("RootTest.json");
+            string jsonLT = "$.people.name";
+            string expected = "[\"name1\",\"name2\",\"name3\",\"name4\",\"name5\",\"name6\"]";
+            string result = interpreter.run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
         public void IndexTest() {
             string json = ReadFile("RootTest.json");
             string jsonLT = "$.people[2]";

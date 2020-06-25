@@ -4,6 +4,7 @@ using JsonLT.Parser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using static JsonLT.Parser.JsonLTParser;
 
@@ -161,7 +162,17 @@ namespace jsonLTParser.interpreter {
                 int index = Convert.ToInt32(node.GetChild(1).GetText());
                 jsonCurrent = jsonCurrent[index];
             } else {
-                jsonCurrent = jsonCurrent[node.GetChild(1).GetText()];
+                if (jsonCurrent is JArray) {
+                    JArray array = (JArray)jsonCurrent;
+                    List<object> result = new List<object>();
+                    for (int i = 0; i < array.Count; i++) {
+                        jsonCurrent = array[i];
+                        result.Add(InterpretSubpathContext(node));
+                    }
+                    return result;
+                } else {
+                    jsonCurrent = jsonCurrent[node.GetChild(1).GetText()];
+                }
             }
             IParseTree lastChild = node.GetChild(node.ChildCount-1);
             if (lastChild is SubpathContext) {
