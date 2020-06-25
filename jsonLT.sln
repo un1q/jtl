@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jsonLTParser", "jsonLTParser\jsonLTParser.csproj", "{DCEC1616-8595-4F2D-8166-C2AA3EE32AA4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jsonLTParserTests", "jsonLTParserTests\jsonLTParserTests.csproj", "{27BD8016-7119-4AC1-B820-5199A124B0C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{DCEC1616-8595-4F2D-8166-C2AA3EE32AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCEC1616-8595-4F2D-8166-C2AA3EE32AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCEC1616-8595-4F2D-8166-C2AA3EE32AA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27BD8016-7119-4AC1-B820-5199A124B0C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27BD8016-7119-4AC1-B820-5199A124B0C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27BD8016-7119-4AC1-B820-5199A124B0C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27BD8016-7119-4AC1-B820-5199A124B0C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

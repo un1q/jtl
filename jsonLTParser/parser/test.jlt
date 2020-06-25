@@ -1,0 +1,17 @@
+{
+  "root" : {
+    "name"   : $.list.author[0].name,
+    "surname": $['list']['author'][0]['surname']
+  },
+  "current" : {
+    "name"   : @.list.author[0].name,
+    "surname": @['list']['author'][0]['surname']
+  },
+  "types" : {
+    "number" : -2.234,
+    "bool"   : true,
+    "nothing": null,
+    "array" : [1,2,3]
+  },
+  "condition"    : $.persons[?(@.sex = "male")].name
+}

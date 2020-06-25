@@ -1,0 +1,10 @@
+﻿{
+  "description" : "this jlt is just json",
+  "someArray" : ["str1", "str3", "str5"],
+  "someObject" : {
+    "int" : 123,
+    "bool" : true,
+    "string" : "sdfsdfsdf",
+    "null" : null
+  }
+}

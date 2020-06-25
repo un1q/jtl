@@ -1,0 +1,1 @@
+java -jar .\antlr-4.7.2-complete.jar ..\parser\JsonLT.g4 -Dlanguage=CSharp -o ..\parser\ -package JsonLT.Parser

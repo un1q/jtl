@@ -23,12 +23,23 @@ element
   | NUMBER
   | obj
   | array
-  | 'true'
-  | 'false'
-  | 'null'
+  | TRUE
+  | FALSE
+  | NULL
   | path
   ;
 
+TRUE
+  : 'true'
+  ;
+
+FALSE
+  : 'false'
+  ;
+
+NULL
+  : 'null'
+  ;
 
 STRING
   : '"' (ESC | SAFECODEPOINT)* '"'
@@ -68,17 +79,6 @@ WS
   ;
 
 // 
-path
-  : ROOT deeper?
-  | CURRENT deeper?
-  ;
-
-deeper
-  : '.' NODE deeper?
-  | '[\'' NODE '\']' deeper?
-  | '[' NUMBER ']' deeper?
-  ;
-
 ROOT
   : '$'
   ;
@@ -87,6 +87,34 @@ CURRENT
   : '@'
   ;
 
-NODE
+TAG
+  : '#' [a-zA-Z][a-zA-Z0-9_]*
+  ;
+
+path
+  : ROOT subpath?
+  | CURRENT subpath?
+  | TAG subpath?
+  ;
+
+subpath
+  : '.' NODENAME condition? subpath?
+  | '[\'' NODENAME '\']' condition? subpath?
+  | '[' NUMBER ']' subpath?
+  ;
+
+NODENAME
   : [a-zA-Z][a-zA-Z0-9_]*
+  ;
+
+condition
+  : '[?(' bool ')]'
+  ;
+
+bool
+  : element OPERATOR element
+  ;
+
+OPERATOR
+  : [<>=]
   ;
