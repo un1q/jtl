@@ -13,5 +13,5 @@
     "nothing": null,
     "array" : [1,2,3]
   },
-  "condition"    : $.persons[?(@.sex = "male")].name
+  "condition"    : $.persons[?(@.sex = "male" and (2+2*2=5) or (2*2+2=5) or (2+2)*2=5)].name
 }

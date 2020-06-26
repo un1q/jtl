@@ -108,13 +108,14 @@ NODENAME
   ;
 
 condition
-  : '[?(' bool ')]'
+  : '[?(' expresion ')]'
   ;
 
-bool
-  : element OPERATOR element
-  ;
-
-OPERATOR
-  : [<>=]
+expresion
+  : expresion ('*'|'/') expresion
+  | expresion ('+'|'-') expresion
+  | expresion ('<'|'>'|'=') expresion
+  | expresion ('and'|'or') expresion
+  | '(' expresion ')'
+  | element
   ;

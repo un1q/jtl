@@ -49,8 +49,6 @@
   <ItemGroup>
     <Compile Include="interpreter\InterpreterException.cs" />
     <Compile Include="interpreter\JsonLTInterpreter.cs" />
-    <Compile Include="interpreter\JsonLTListener.cs" />
-    <Compile Include="JsonTerminals.cs" />
     <Compile Include="parser\jsonLTBaseListener.cs" />
     <Compile Include="parser\jsonLTLexer.cs" />
     <Compile Include="parser\jsonLTListener.cs" />

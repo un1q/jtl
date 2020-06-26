@@ -112,14 +112,14 @@ public interface IJsonLTListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCondition([NotNull] JsonLTParser.ConditionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="JsonLTParser.bool"/>.
+	/// Enter a parse tree produced by <see cref="JsonLTParser.expresion"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterBool([NotNull] JsonLTParser.BoolContext context);
+	void EnterExpresion([NotNull] JsonLTParser.ExpresionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="JsonLTParser.bool"/>.
+	/// Exit a parse tree produced by <see cref="JsonLTParser.expresion"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitBool([NotNull] JsonLTParser.BoolContext context);
+	void ExitExpresion([NotNull] JsonLTParser.ExpresionContext context);
 }
 } // namespace JsonLT.Parser

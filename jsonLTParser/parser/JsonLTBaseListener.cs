@@ -132,17 +132,17 @@ public partial class JsonLTBaseListener : IJsonLTListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCondition([NotNull] JsonLTParser.ConditionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="JsonLTParser.bool"/>.
+	/// Enter a parse tree produced by <see cref="JsonLTParser.expresion"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBool([NotNull] JsonLTParser.BoolContext context) { }
+	public virtual void EnterExpresion([NotNull] JsonLTParser.ExpresionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="JsonLTParser.bool"/>.
+	/// Exit a parse tree produced by <see cref="JsonLTParser.expresion"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBool([NotNull] JsonLTParser.BoolContext context) { }
+	public virtual void ExitExpresion([NotNull] JsonLTParser.ExpresionContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>
