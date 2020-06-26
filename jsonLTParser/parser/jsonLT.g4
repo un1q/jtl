@@ -105,6 +105,12 @@ subpath
   : '.' NODENAME condition? subpath?
   | '[\'' NODENAME '\']' condition? subpath?
   | '[' NUMBER ']' subpath?
+  | foreach
+  ;
+
+foreach
+  : TAG '(' elements ')'
+  | '(' elements ')'
   ;
 
 NODENAME

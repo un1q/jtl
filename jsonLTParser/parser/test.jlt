@@ -1,14 +1,23 @@
 {
-  "concat" : "str1" "str2",
-  "concat" : 234 "str2",
-  "concat" : $.somepath.node1 "is " $.somepath.node1,
-  "root" : {
-    "name"   : $.list.author[0].name,
-    "surname": $['list']['author'][0]['surname']
+  "forEachTest" : [
+    $.persons#p("name" #p.name),
+    $.persons#p("name" @.name),
+    $.persons("name" @.name)
+  ],
+  "concatTests" : {
+    "concat" : "str1" "str2",
+    "concat" : 234 "str2",
+    "concat" : $.somepath.node1 "is " $.somepath.node1
   },
-  "current" : {
-    "name"   : @.list.author[0].name,
-    "surname": @['list']['author'][0]['surname']
+  "pathTest" : {
+    "root" : {
+      "name"   : $.list.author[0].name,
+      "surname": $['list']['author'][0]['surname']
+    },
+    "current" : {
+      "name"   : @.list.author[0].name,
+      "surname": @['list']['author'][0]['surname']
+    }
   },
   "types" : {
     "number" : -2.234,

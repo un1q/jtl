@@ -112,6 +112,16 @@ public interface IJsonLTListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitSubpath([NotNull] JsonLTParser.SubpathContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JsonLTParser.foreach"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForeach([NotNull] JsonLTParser.ForeachContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JsonLTParser.foreach"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForeach([NotNull] JsonLTParser.ForeachContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JsonLTParser.condition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

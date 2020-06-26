@@ -22,7 +22,7 @@ namespace jsonLTParser.interpreter {
             interpreters.Add(typeof(ElementContext     ), InterpretElementContext      );
             interpreters.Add(typeof(ObjContext         ), InterpretObjContext          );
             interpreters.Add(typeof(MemberContext      ), InterpretMemberContext       );
-            //interpreters.Add(typeof(RelativePathContext), InterpretRelativePathContext );
+            interpreters.Add(typeof(ForeachContext), InterpretForeachContext );
             interpreters.Add(typeof(ArrayContext       ), InterpretArrayContext        );
             //interpreters.Add(typeof(AbsolutePathContext), InterpretAbsolutePathContext );
             //interpreters.Add(typeof(DeeperContext      ), InterpretDeeperContext       );
@@ -237,12 +237,21 @@ namespace jsonLTParser.interpreter {
                 object result = Interpret(node.GetChild(1));
                 jsonCurrent = jsonCurrentBackup;
                 return result;
+            } else if (aliasType == TAG) {
+                JToken jsonCurrentBackup = jsonCurrent;
+                if (!jsonAliases.TryGetValue(aliasChild.GetText(), out jsonCurrent))
+                    throw new InterpreterException("Uknown alias " + aliasChild.GetText() + "; Error in : " + node.GetText());
+                object result = Interpret(node.GetChild(1));
+                jsonCurrent = jsonCurrentBackup;
+                return result;
             } else {
                 throw new InterpreterException("Unknown path alias type: " + aliasChild.GetText());
             }
         }
 
         private object InterpretSubpathContext(IParseTree node) {
+            if (node.GetChild(0) is ForeachContext)
+                return Interpret(node.GetChild(0));
             ValidateChildCountMin(node, 2);
             if ("[".Equals(node.GetChild(0).GetText())) {
                 int index = Convert.ToInt32(node.GetChild(1).GetText());
@@ -321,6 +330,22 @@ namespace jsonLTParser.interpreter {
             catch (Exception ex) {
                 throw new InterpreterException("Error in : " + node.GetText(), ex);
             }
+        }
+
+        private object InterpretForeachContext(IParseTree node) {
+            string alias = null;
+            if (node.GetChild(0) is ITerminalNode term && term.Symbol.Type == TAG) {
+                ValidateChildCount(node, 4);
+                alias = term.GetText();
+                if (jsonAliases.ContainsKey(alias))
+                    throw new InterpreterException("alias " + alias + "  already used; Error in : " + node.GetText());
+                jsonAliases.Add(alias, jsonCurrent);
+            }
+            ValidateChildCountMin(node, 3);
+            object result = Interpret(node.GetChild(node.ChildCount - 2));
+            if (alias != null)
+                jsonAliases.Remove(alias);
+            return result;
         }
 
         private void ValidateChildCount(IParseTree node, int count) {

@@ -132,6 +132,18 @@ public partial class JsonLTBaseListener : IJsonLTListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSubpath([NotNull] JsonLTParser.SubpathContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JsonLTParser.foreach"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterForeach([NotNull] JsonLTParser.ForeachContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JsonLTParser.foreach"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitForeach([NotNull] JsonLTParser.ForeachContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JsonLTParser.condition"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

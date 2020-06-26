@@ -111,5 +111,23 @@ namespace jsonLTParser.Tests {
             string result = interpreter.Run(json, jsonLT);
             Assert.AreEqual(expected, result);
         }
+
+        [TestMethod()]
+        public void ForEachTest1() {
+            string json = ReadFile("RootTest.json");
+            string jsonLT = "$.people[1](\"His name is\" @.name @.surname)";
+            string expected = "\"His name is name2 surname2\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void ForEachTest2() {
+            string json = ReadFile("RootTest.json");
+            string jsonLT = "$.people[1]#pp(\"His name is\" #pp.name #pp.surname)";
+            string expected = "\"His name is name2 surname2\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
     }
 }
