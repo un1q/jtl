@@ -1,7 +1,7 @@
 grammar JsonLT;
 
 json
-  : element
+  : elements
   ;
 
 obj
@@ -10,12 +10,16 @@ obj
   ;
 
 member
-  : STRING ':' element
+  : STRING ':' elements
   ;
 
 array
-  : '[' element (',' element)* ']'
+  : '[' elements (',' elements)* ']'
   | '[' ']'
+  ;
+
+elements
+  : element element*
   ;
 
 element
@@ -117,5 +121,5 @@ expresion
   | expresion ('<'|'>'|'=') expresion
   | expresion ('and'|'or') expresion
   | '(' expresion ')'
-  | element
+  | elements
   ;

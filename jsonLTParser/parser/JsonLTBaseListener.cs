@@ -84,6 +84,18 @@ public partial class JsonLTBaseListener : IJsonLTListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArray([NotNull] JsonLTParser.ArrayContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JsonLTParser.elements"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterElements([NotNull] JsonLTParser.ElementsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JsonLTParser.elements"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitElements([NotNull] JsonLTParser.ElementsContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JsonLTParser.element"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

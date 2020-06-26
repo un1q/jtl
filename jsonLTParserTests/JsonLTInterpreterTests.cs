@@ -93,5 +93,23 @@ namespace jsonLTParser.Tests {
             string result = interpreter.Run(json, jsonLT);
             Assert.AreEqual(expected, result);
         }
+
+        [TestMethod()]
+        public void ConcatTest1() {
+            string json = "{}";
+            string jsonLT = "\"This\" \"is\" \"test\" \"123\"";
+            string expected = "\"This is test 123\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void ConcatTest2() {
+            string json = ReadFile("RootTest.json");
+            string jsonLT = "$.people[1].name $.people[1].surname";
+            string expected = "\"name2 surname2\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
     }
 }

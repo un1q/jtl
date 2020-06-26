@@ -72,6 +72,16 @@ public interface IJsonLTListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArray([NotNull] JsonLTParser.ArrayContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JsonLTParser.elements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterElements([NotNull] JsonLTParser.ElementsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JsonLTParser.elements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitElements([NotNull] JsonLTParser.ElementsContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JsonLTParser.element"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

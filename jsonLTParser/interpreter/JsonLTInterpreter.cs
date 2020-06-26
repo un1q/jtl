@@ -18,6 +18,7 @@ namespace jsonLTParser.interpreter {
 
         public JsonLTInterpreter() {
             interpreters.Add(typeof(JsonContext        ), InterpretJsonContext         );
+            interpreters.Add(typeof(ElementsContext    ), InterpretElementsContext     );
             interpreters.Add(typeof(ElementContext     ), InterpretElementContext      );
             interpreters.Add(typeof(ObjContext         ), InterpretObjContext          );
             interpreters.Add(typeof(MemberContext      ), InterpretMemberContext       );
@@ -152,16 +153,28 @@ namespace jsonLTParser.interpreter {
             return result;
         }
 
+        private object InterpretElementsContext(IParseTree node) {
+            if (node.ChildCount == 1)
+                return Interpret(node.GetChild(0));
+            List<String> list = new List<string>();
+            for (int i = 0; i < node.ChildCount; i++) {
+                object r = Interpret(node.GetChild(i));
+                if (r != null) {
+                    list.Add(r.ToString());
+                }
+            }
+            return string.Join(" ", list); 
+        }
+
         private object InterpretElementContext(IParseTree node) {
             ValidateChildCount(node, 1);
-            IParseTree child = node.GetChild(0);
-            return Interpret(child);
+            return Interpret(node.GetChild(0));
         }
 
         private object InterpretJsonContext(IParseTree node) {
             ValidateChildCount(node, 1);
             IParseTree child = node.GetChild(0);
-            ValidateType<ElementContext>(child);
+            ValidateType<ElementsContext>(child);
             return Interpret(child);
         }
 
