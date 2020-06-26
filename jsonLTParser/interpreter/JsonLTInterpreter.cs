@@ -56,13 +56,13 @@ namespace jsonLTParser.interpreter {
         private object EvalOr(object left, object right) {
             if (left is bool l && right is bool r)
                 return l || r;
-            throw new InterpreterException("Only booleans can be compared with and/or operator");
+            throw new Exception("Only booleans can be compared with and/or operator");
         }
 
         private object EvalAnd(object left, object right) {
             if (left is bool l && right is bool r)
                 return l && r;
-            throw new InterpreterException("Only booleans can be compared with and/or operator");
+            throw new Exception("Only booleans can be compared with and/or operator");
         }
 
         private object EvalMinus(object left, object right) {
@@ -112,7 +112,7 @@ namespace jsonLTParser.interpreter {
             Func<IParseTree, object> func;
             if (interpreters.TryGetValue(tree.GetType(), out func))
                 return func(tree);
-            throw new InterpreterException("Unknown node type: " + tree.GetType().Name);
+            throw new InterpreterException(tree, "Unknown node type: " + tree.GetType().Name);
         }
         private object InterpretBinaryOperator(string oper, object left, object right) {
             if (binaryOperatorInterpreters.TryGetValue(oper, out Func<object, object, object> func)) {
@@ -122,7 +122,7 @@ namespace jsonLTParser.interpreter {
                     right = rightJV.Value;
                 return func(left, right);
             }
-            throw new InterpreterException("Unknown binary operator: " + oper);
+            throw new Exception("Unknown binary operator: " + oper);
         }
 
         private object InterpretMemberContext(IParseTree node) {
@@ -147,7 +147,7 @@ namespace jsonLTParser.interpreter {
                     KeyValuePair<string, object> member = (KeyValuePair<string, object>)child;
                     result.Add(member.Key, member.Value);
                 } else {
-                    throw new InterpreterException("Wrong node type, expected: member, actual: " + child.GetType().Name);
+                    throw new InterpreterException(node, "Wrong node type, expected: member, actual: " + child.GetType().Name);
                 }
             }
             return result;
@@ -190,7 +190,7 @@ namespace jsonLTParser.interpreter {
                 if (child != null) {
                     result.Add(child);
                 } else {
-                    throw new InterpreterException("Unexpected tokens in array: " + node.GetChild(i).GetText());
+                    throw new InterpreterException(node, "Unexpected tokens in array: " + node.GetChild(i).GetText());
                 }
             }
             return result;
@@ -240,12 +240,12 @@ namespace jsonLTParser.interpreter {
             } else if (aliasType == TAG) {
                 JToken jsonCurrentBackup = jsonCurrent;
                 if (!jsonAliases.TryGetValue(aliasChild.GetText(), out jsonCurrent))
-                    throw new InterpreterException("Uknown alias " + aliasChild.GetText() + "; Error in : " + node.GetText());
+                    throw new InterpreterException(node, "Uknown alias " + aliasChild.GetText());
                 object result = Interpret(node.GetChild(1));
                 jsonCurrent = jsonCurrentBackup;
                 return result;
             } else {
-                throw new InterpreterException("Unknown path alias type: " + aliasChild.GetText());
+                throw new InterpreterException(node, "Unknown path alias type: " + aliasChild.GetText());
             }
         }
 
@@ -312,7 +312,7 @@ namespace jsonLTParser.interpreter {
             if (result is bool boolResult) {
                 return boolResult;
             }
-            throw new InterpreterException("Condition should be evaluated to boolean, not " + result.GetType() + " : " + condition.GetText());
+            throw new InterpreterException(condition, "Condition should be evaluated to boolean, not " + result.GetType());
         }
 
         private object InterpretExpresionContext(IParseTree node) {
@@ -328,7 +328,7 @@ namespace jsonLTParser.interpreter {
                 return InterpretBinaryOperator(oper, left, right);
             }
             catch (Exception ex) {
-                throw new InterpreterException("Error in : " + node.GetText(), ex);
+                throw new InterpreterException(node, ex);
             }
         }
 
@@ -338,7 +338,7 @@ namespace jsonLTParser.interpreter {
                 ValidateChildCount(node, 4);
                 alias = term.GetText();
                 if (jsonAliases.ContainsKey(alias))
-                    throw new InterpreterException("alias " + alias + "  already used; Error in : " + node.GetText());
+                    throw new InterpreterException(node, "alias " + alias + "  already used");
                 jsonAliases.Add(alias, jsonCurrent);
             }
             ValidateChildCountMin(node, 3);
@@ -350,23 +350,23 @@ namespace jsonLTParser.interpreter {
 
         private void ValidateChildCount(IParseTree node, int count) {
             if (node.ChildCount != count)
-                throw new InterpreterException(string.Format("Wrong number of children, expected: {0} actual: {1}", count, node.ChildCount));
+                throw new InterpreterException(node, string.Format("Wrong number of children, expected: {0} actual: {1}", count, node.ChildCount));
         }
 
         private void ValidateChildCountMin(IParseTree node, int count) {
             if (node.ChildCount < count)
-                throw new InterpreterException(string.Format("Wrong number of children, expected at least: {0} actual: {1}", count, node.ChildCount));
+                throw new InterpreterException(node, string.Format("Wrong number of children, expected at least: {0} actual: {1}", count, node.ChildCount));
         }
 
         private void ValidateType<T>(IParseTree node) {
             if (!node.GetType().Equals(typeof(T)))
-                throw new InterpreterException(string.Format("Wrong node type, expected: {0} actual: {1}", typeof(T).Name, node.GetType().Name));
+                throw new InterpreterException(node, string.Format("Wrong node type, expected: {0} actual: {1}", typeof(T).Name, node.GetType().Name));
         }
 
         private void ValidateToken(IParseTree node, string token) {
             ValidateType<TerminalNodeImpl>(node);
             if (token != node.GetText())
-                throw new InterpreterException(string.Format("Wrong node text, expected: {0} actual: {1}", token, node.GetText()));
+                throw new InterpreterException(node, string.Format("Wrong node text, expected: {0} actual: {1}", token, node.GetText()));
         }
     }
 }
