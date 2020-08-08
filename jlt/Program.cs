@@ -83,10 +83,10 @@ namespace jlt
 
         private static void Usage() {
             Console.WriteLine("Usage:");
-            Console.WriteLine("  jlt -jsonPath somePath -jltPath somePath");
-            Console.WriteLine("  jlt -json \"{json}\" -jlt \"{jlt}\"");
-            Console.WriteLine("  jlt -json \"{json}\" -jltPath somePath");
-            Console.WriteLine("  jlt -jsonPath somePath -jlt \"{jlt}\"");
+            Console.WriteLine("  jlt -{0} somePath -{1} somePath", JSONPATH, JLTPATH);
+            Console.WriteLine("  jlt -{0} \"{{json}}\" -{1} \"{{jlt}}\"", JSONSTRING, JLTSTRING);
+            Console.WriteLine("  jlt -{0} \"{{json}}\" -{1} somePath", JSONSTRING, JLTPATH);
+            Console.WriteLine("  jlt -{0} somePath -{1} \"{{jlt}}\"", JSONPATH, JLTPATH);
         }
     }
 }
