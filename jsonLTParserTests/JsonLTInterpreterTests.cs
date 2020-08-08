@@ -129,5 +129,91 @@ namespace jsonLTParser.Tests {
             string result = interpreter.Run(json, jsonLT);
             Assert.AreEqual(expected, result);
         }
+
+        [TestMethod()]
+        public void Trello1() {
+            string json = ReadFile("trello.json");
+            string jsonLT = "$.name";
+            string expected = "\"Gloomheaven\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void Trello2()
+        {
+            string json = ReadFile("trello.json");
+            string jsonLT = "$.lists.name";
+            string expected = "[\"Odwiedzone\",\"Dostępne?\",\"Już niedostępne\",\"Achievementy\"]";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void Trello3()
+        {
+            string json = ReadFile("trello.json");
+            string jsonLT = "{\"name\" : $.name , \"lists\" : $.lists.name}";
+            string expected = "{\"name\":\"Gloomheaven\",\"lists\":[\"Odwiedzone\",\"Dostępne?\",\"Już niedostępne\",\"Achievementy\"]}";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void Trello4()
+        {
+            string json = ReadFile("trello.json");
+            string jsonLT = @"{
+                ""name"" : $.name ,
+                ""lists"" : $.lists#LIST(
+                    {
+                        ""name"" : #LIST.name
+                    }
+                )
+            }";
+            string expected = "{\"name\":\"Gloomheaven\",\"lists\":[{\"name\":\"Odwiedzone\"},{\"name\":\"Dostępne?\"},{\"name\":\"Już niedostępne\"},{\"name\":\"Achievementy\"}]}";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+
+        [TestMethod()]
+        public void Trello5() {
+            string json = ReadFile("trello.json");
+            string jsonLT = @"{
+                ""name"" : $.name ,
+                ""lists"" : $.lists#LIST(
+                    {
+                        ""name""  : #LIST.name,
+                        ""cards"" : $.cards[?(@.idList = #LIST.id)].name
+                    }
+                )
+            }";
+            string expected = ReadFile("expected_trello5.json");
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void Trello6() {
+            string json = ReadFile("trello.json");
+            string jsonLT = @"{
+                ""name"" : $.name ,
+                ""lists"" : $.lists#LIST(
+                    {
+                        ""name""  : #LIST.name,
+                        ""cards"" : $.cards[?(@.idList = #LIST.id)]#CARD(
+                            {
+                                ""name"" : #CARD.name,
+                                ""url""  : #CARD.shortUrl
+                            }
+                        )
+                    }
+                )
+            }";
+            string expected = ReadFile("expected_trello6.json");
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
     }
 }

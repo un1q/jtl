@@ -339,10 +339,29 @@ namespace jsonLTParser.interpreter {
                 alias = term.GetText();
                 if (jsonAliases.ContainsKey(alias))
                     throw new InterpreterException(node, "alias " + alias + "  already used");
-                jsonAliases.Add(alias, jsonCurrent);
+                //jsonAliases.Add(alias, jsonCurrent);
             }
             ValidateChildCountMin(node, 3);
-            object result = Interpret(node.GetChild(node.ChildCount - 2));
+            object result = null;
+            if (jsonCurrent is JArray array) {
+                List<object> resultArray = new List<object>();
+                var oldJsonCurrent = jsonCurrent;
+                for (int i = 0; i < array.Count; i++) {
+                    jsonCurrent = array[i];
+                    if (alias != null)
+                        jsonAliases[alias] = jsonCurrent;
+                    resultArray.Add(Interpret(node.GetChild(node.ChildCount - 2)));
+                }
+                jsonCurrent = oldJsonCurrent;
+                result = resultArray;
+            } else {
+                if (alias != null)
+                    jsonAliases[alias] = jsonCurrent;
+                result = Interpret(node.GetChild(node.ChildCount - 2));
+                //result.Add(Interpret(node.GetChild(node.ChildCount - 2)));
+            }
+
+            //object result = Interpret(node.GetChild(node.ChildCount - 2));
             if (alias != null)
                 jsonAliases.Remove(alias);
             return result;
