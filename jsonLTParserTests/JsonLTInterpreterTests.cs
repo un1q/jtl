@@ -215,5 +215,14 @@ namespace jsonLTParser.Tests {
             string result = interpreter.Run(json, jsonLT);
             Assert.AreEqual(expected, result);
         }
+
+        [TestMethod()]
+        public void Trello7() {
+            string json = ReadFile("trello.json");
+            string jsonLT = @"$.lists+(@.name ""\r\n"")";
+            string expected = "\"Odwiedzone \\r\\nDostępne? \\r\\nJuż niedostępne \\r\\nAchievementy \\r\\n\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
     }
 }

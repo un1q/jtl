@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using static JsonLT.Parser.JsonLTParser;
 
 namespace jsonLTParser.interpreter {
@@ -17,19 +18,20 @@ namespace jsonLTParser.interpreter {
         private Dictionary<string, JToken> jsonAliases;
 
         public JsonLTInterpreter() {
-            interpreters.Add(typeof(JsonContext        ), InterpretJsonContext         );
-            interpreters.Add(typeof(ElementsContext    ), InterpretElementsContext     );
-            interpreters.Add(typeof(ElementContext     ), InterpretElementContext      );
-            interpreters.Add(typeof(ObjContext         ), InterpretObjContext          );
-            interpreters.Add(typeof(MemberContext      ), InterpretMemberContext       );
-            interpreters.Add(typeof(ForeachContext), InterpretForeachContext );
-            interpreters.Add(typeof(ArrayContext       ), InterpretArrayContext        );
+            interpreters.Add(typeof(JsonContext         ), InterpretJsonContext         );
+            interpreters.Add(typeof(ElementsContext     ), InterpretElementsContext     );
+            interpreters.Add(typeof(ElementContext      ), InterpretElementContext      );
+            interpreters.Add(typeof(ObjContext          ), InterpretObjContext          );
+            interpreters.Add(typeof(MemberContext       ), InterpretMemberContext       );
+            interpreters.Add(typeof(ForeachContext      ), InterpretForeachContext      );
+            interpreters.Add(typeof(ArrayContext        ), InterpretArrayContext        );
             //interpreters.Add(typeof(AbsolutePathContext), InterpretAbsolutePathContext );
             //interpreters.Add(typeof(DeeperContext      ), InterpretDeeperContext       );
-            interpreters.Add(typeof(SubpathContext     ), InterpretSubpathContext      );
-            interpreters.Add(typeof(PathContext        ), InterpretPathContext         );
-            interpreters.Add(typeof(TerminalNodeImpl   ), InterpretTerminalNodeImpl    );
-            interpreters.Add(typeof(ExpresionContext   ), InterpretExpresionContext    );
+            interpreters.Add(typeof(SubpathContext      ), InterpretSubpathContext      );
+            interpreters.Add(typeof(PathContext         ), InterpretPathContext         );
+            interpreters.Add(typeof(TerminalNodeImpl    ), InterpretTerminalNodeImpl    );
+            interpreters.Add(typeof(ExpresionContext    ), InterpretExpresionContext    );
+            interpreters.Add(typeof(ConcatenationContext), InterpretConcatenationContext);
             binaryOperatorInterpreters.Add("*", EvalMul);
             binaryOperatorInterpreters.Add("/", EvalDiv);
             binaryOperatorInterpreters.Add("+", EvalPlus);
@@ -199,8 +201,15 @@ namespace jsonLTParser.interpreter {
         private object InterpretTerminalNodeImpl(IParseTree node) {
             TerminalNodeImpl term = (TerminalNodeImpl)node;
             if (term.Symbol.Type == JsonLTParser.STRING) {
-                string text = term.GetText();
-                return text.Substring(1, text.Length-2);
+                StringBuilder text = new StringBuilder(term.GetText());
+                text.Remove(0, 1);
+                text.Remove(text.Length-1, 1);
+                text.Replace("\\t", "\t");
+                text.Replace("\\r", "\r");
+                text.Replace("\\n", "\n");
+                text.Replace("\\\\", "\\");
+                text.Replace("\\", "");
+                return text.ToString();
             }
             if (term.Symbol.Type == JsonLTParser.NUMBER) {
                 string text = term.GetText();
@@ -250,7 +259,7 @@ namespace jsonLTParser.interpreter {
         }
 
         private object InterpretSubpathContext(IParseTree node) {
-            if (node.GetChild(0) is ForeachContext)
+            if (node.GetChild(0) is ForeachContext || node.GetChild(0) is ConcatenationContext)
                 return Interpret(node.GetChild(0));
             ValidateChildCountMin(node, 2);
             if ("[".Equals(node.GetChild(0).GetText())) {
@@ -365,6 +374,21 @@ namespace jsonLTParser.interpreter {
             if (alias != null)
                 jsonAliases.Remove(alias);
             return result;
+        }
+
+        private object InterpretConcatenationContext(IParseTree node) {
+            ValidateChildCount(node, 2);
+            ValidateToken(node.GetChild(0), "+");
+            object result = Interpret(node.GetChild(1));
+            if (result is IList resultArray) {
+                StringBuilder str = new StringBuilder();
+                foreach (var elem in resultArray) {
+                    str.Append(elem.ToString());
+                }
+                return str.ToString();
+            } else {
+                return result.ToString();
+            }
         }
 
         private void ValidateChildCount(IParseTree node, int count) {
