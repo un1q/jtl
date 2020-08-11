@@ -1,8 +1,8 @@
 {
 	"concatenationsTests" : {
 		"test1" : $.concatenate+.this,
-		"test2" : $.concatenate+(@.this " "),
-		"test3" : $.concatenate+(@.this "\r\n")
+		"test2" : $.concatenate+(@.this "\r\n"),
+		"test3" : $.concatenate+",".this,
 	}, 
 	"forEachTest" : [
 		$.persons#p("name" #p.name),

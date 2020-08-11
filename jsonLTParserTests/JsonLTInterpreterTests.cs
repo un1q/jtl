@@ -224,5 +224,24 @@ namespace jsonLTParser.Tests {
             string result = interpreter.Run(json, jsonLT);
             Assert.AreEqual(expected, result);
         }
+
+        [TestMethod()]
+        public void Trello8() {
+            string json = ReadFile("RootTest.json");
+            string jsonLT = @"$+"","".people[?(@.sex = ""male"")].name";
+            string expected = "\"name1,name3,name5\"";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
+
+
+        [TestMethod()]
+        public void Trello9() {
+            string json = ReadFile("RootTest.json");
+            string jsonLT = @"$+"","".people[?(@.sex = ""male"")]";
+            string expected = @"""{\r\n  \""name\"": \""name1\"",\r\n  \""surname\"": \""surname1\"",\r\n  \""sex\"": \""male\"",\r\n  \""age\"": 39\r\n},{\r\n  \""name\"": \""name3\"",\r\n  \""surname\"": \""surname3\"",\r\n  \""sex\"": \""male\"",\r\n  \""age\"": 9\r\n},{\r\n  \""name\"": \""name5\"",\r\n  \""surname\"": \""surname5\"",\r\n  \""sex\"": \""male\"",\r\n  \""age\"": 29\r\n}""";
+            string result = interpreter.Run(json, jsonLT);
+            Assert.AreEqual(expected, result);
+        }
     }
 }

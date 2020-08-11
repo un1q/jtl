@@ -92,11 +92,15 @@ namespace jsonLTParser.interpreter {
             return (long)left * (long)right;
         }
 
-        public string Run(string json, string jsonLT) {
+        public string Run(string json, string jsonLT, bool asString = false, bool pretty = false) {
             jsonObj = (JToken)JsonConvert.DeserializeObject(json);
             jsonAliases = new Dictionary<string, JToken>();
             IParseTree tree = PrepareTree(jsonLT);
             object result = Interpret(tree);
+            if (asString)
+                return result.ToString();
+            if (pretty)
+                return JsonConvert.SerializeObject(result, Formatting.Indented);
             return JsonConvert.SerializeObject(result);
         }
 
@@ -377,13 +381,23 @@ namespace jsonLTParser.interpreter {
         }
 
         private object InterpretConcatenationContext(IParseTree node) {
-            ValidateChildCount(node, 2);
+            ValidateChildCountMin(node, 2);
+            ValidateChildCountMax(node, 3);
             ValidateToken(node.GetChild(0), "+");
-            object result = Interpret(node.GetChild(1));
+            string separator = null;
+            if (node.ChildCount == 3) {
+                separator = Interpret(node.GetChild(1)).ToString();
+            }
+            object result = Interpret(node.GetChild(node.ChildCount - 1));
             if (result is IList resultArray) {
                 StringBuilder str = new StringBuilder();
+                bool first = true;
                 foreach (var elem in resultArray) {
+                    if (!first && separator != null) {
+                        str.Append(separator);
+                    }
                     str.Append(elem.ToString());
+                    first = false;
                 }
                 return str.ToString();
             } else {
@@ -399,6 +413,11 @@ namespace jsonLTParser.interpreter {
         private void ValidateChildCountMin(IParseTree node, int count) {
             if (node.ChildCount < count)
                 throw new InterpreterException(node, string.Format("Wrong number of children, expected at least: {0} actual: {1}", count, node.ChildCount));
+        }
+
+        private void ValidateChildCountMax(IParseTree node, int count) {
+            if (node.ChildCount > count)
+                throw new InterpreterException(node, string.Format("Wrong number of children, expected at most: {0} actual: {1}", count, node.ChildCount));
         }
 
         private void ValidateType<T>(IParseTree node) {

@@ -115,7 +115,7 @@ foreach
   ;
 
 concatenation
-  : '+' subpath
+  : '+' STRING? subpath
   ;
 
 NODENAME
